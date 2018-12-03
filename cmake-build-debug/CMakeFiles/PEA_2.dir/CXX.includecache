@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+Q:/Studia/CLion/PEA_2/AlgorithmTSP.h
+DataLoader.h
+Q:/Studia/CLion/PEA_2/DataLoader.h
+iostream
+-
+vector
+-
+iterator
+-
+
+Q:/Studia/CLion/PEA_2/DataLoader.h
+fstream
+-
+
+Q:/Studia/CLion/PEA_2/SimulatedAnnealing.cpp
+SimulatedAnnealing.h
+Q:/Studia/CLion/PEA_2/SimulatedAnnealing.h
+Timer.h
+Q:/Studia/CLion/PEA_2/Timer.h
+algorithm
+-
+random
+-
+cmath
+-
+
+Q:/Studia/CLion/PEA_2/SimulatedAnnealing.h
+AlgorithmTSP.h
+Q:/Studia/CLion/PEA_2/AlgorithmTSP.h
+
+Q:/Studia/CLion/PEA_2/Timer.h
+windows.h
+-
+
