@@ -8,7 +8,7 @@
 #include <random>
 #include <cmath>
 
-SimulatedAnnealing::SimulatedAnnealing(std::string fileName) : AlgorithmTSP(std::move(fileName)) {
+SimulatedAnnealing::SimulatedAnnealing(std::string fileName) : AlgorithmTSP(std::move(fileName)), eng(random_device_global()) {
 }
 
 double SimulatedAnnealing::InitAlgorithm(unsigned startVertex) {
@@ -41,12 +41,10 @@ void SimulatedAnnealing::CalculatePath(unsigned startVertex) {
     Path path(startVertex, graphSize_ - 1);
     Path bestPath(startVertex, graphSize_ - 1);
     InitPath(path);
-    unsigned numberOfSteps = 100;
+    unsigned numberOfSteps = 250;
     unsigned stepLength = CalculateStepLength();
     bestPath = path;
 
-    std::random_device random_device;
-    std::mt19937_64 eng(random_device());
     std::uniform_real_distribution<double> distribution(0.0f, 1.0f);
 
     std::cout << "Poczatek: " << std::endl;
@@ -84,13 +82,11 @@ void SimulatedAnnealing::InitPath(Path &path) {
     }
     unsigned costDelta = CreateShuffledVector(path);
     //InitTemperature(costDelta);
-    temperature_ = 1;
+    temperature_ = 5;
     std::cout << "temperature: " << temperature_ << std::endl;
 }
 
 unsigned SimulatedAnnealing::CreateShuffledVector(Path &path) {
-    std::random_device random_device;
-    std::mt19937_64 eng(random_device());
     std::uniform_int_distribution<unsigned> distribution(0, graphSize_ - 2);
     unsigned cost_max = std::numeric_limits<unsigned>::min();
     unsigned cost_min = std::numeric_limits<unsigned>::max();
@@ -115,8 +111,6 @@ unsigned SimulatedAnnealing::CreateShuffledVector(Path &path) {
 }
 
 void SimulatedAnnealing::CreatePermutation(Path &path) {
-    std::random_device random_device;
-    std::mt19937_64 eng(random_device());
     std::uniform_int_distribution<unsigned> distribution(0, graphSize_ - 2);
     unsigned first = distribution(eng);
     unsigned second = distribution(eng);

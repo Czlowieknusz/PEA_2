@@ -41,7 +41,7 @@ public:
     double temperature_;
 
     std::random_device random_device_global;
-    std::mt19937_64 eng(random_device_global());
+    std::mt19937_64 eng;
 };
 
 
