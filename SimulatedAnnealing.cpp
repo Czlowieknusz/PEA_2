@@ -8,7 +8,16 @@
 #include <random>
 #include <cmath>
 
-SimulatedAnnealing::SimulatedAnnealing(std::string fileName) : AlgorithmTSP(std::move(fileName)), eng(random_device_global()) {
+SimulatedAnnealing::SimulatedAnnealing(std::string fileName) : AlgorithmTSP(std::move(fileName)),
+                                                               eng(random_device_global()) {
+}
+
+SimulatedAnnealing::SimulatedAnnealing(std::string fileName, bool isTsp) : AlgorithmTSP(std::move(fileName), isTsp),
+                                                                           eng(random_device_global()) {
+}
+
+SimulatedAnnealing::SimulatedAnnealing(bool isTsp, std::string fileName) : AlgorithmTSP(isTsp, std::move(fileName)),
+                                                                           eng(random_device_global()) {
 }
 
 double SimulatedAnnealing::InitAlgorithm(unsigned startVertex) {
@@ -41,33 +50,25 @@ void SimulatedAnnealing::CalculatePath(unsigned startVertex) {
     Path path(startVertex, graphSize_ - 1);
     Path bestPath(startVertex, graphSize_ - 1);
     InitPath(path);
-    unsigned numberOfSteps = 250;
-    unsigned stepLength = CalculateStepLength();
+    double minTemperature = exp(-3);
+    double temperatureOnTheStep;
+    unsigned stepLength = graphSize_ * graphSize_ * graphSize_;
     bestPath = path;
 
-    std::uniform_real_distribution<double> distribution(0.0f, 1.0f);
+    std::uniform_real_distribution<double> distributionProbability(0.0f, 1.0f);
 
-    std::cout << "Poczatek: " << std::endl;
-    std::cout << bestPath << std::endl;
-    std::cout << "numberofsteps = " << numberOfSteps << std::endl;
-    std::cout << "stepLen = " << stepLength << std::endl;
-    // Jest temperatura, jest ilosc stopni, jest dlugosc stopni, jest sciezka, jest najlepsza sciezka
-    for (unsigned currentStep = 0; currentStep < numberOfSteps; ++currentStep) {
+    while (temperature_ > minTemperature) {
+        temperatureOnTheStep = temperature_;
         for (unsigned inner = 0; inner < stepLength; ++inner) {
             CreatePermutation(path);
-//            std::cout << "delta = " << std::exp((-1) * (path.cost_ - bestPath.cost_) / temperature_) << std::endl;
+            double probability = (distributionProbability(eng));
             if (bestPath.cost_ > path.cost_) {
-//                std::cout << "Kiedys chyba musi" << std::endl;
                 bestPath = path;
-            } else if (distribution(eng) <= std::exp((-1) * (path.cost_ - bestPath.cost_) / temperature_)) {
-                //                          std::cout << "Hurray!" << std::endl;
+            } else if (probability <= 1 / (1 + std::exp((-1) * (path.cost_ - bestPath.cost_) / temperatureOnTheStep))) {
                 bestPath = path;
-            } else {
-//                std::cout << "Czy kiedykolwiek?" << std::endl;
             }
+            temperatureOnTheStep *= 0.99;
         }
-//        std::cout << "Temperature: " << temperature_ << "; cost: " << path.cost_ << std::endl;
-        // nowa temperatura
         NextTemperature();
     }
     std::cout << "Koniec:" << std::endl;
@@ -81,9 +82,8 @@ void SimulatedAnnealing::InitPath(Path &path) {
         path.path_[i] = i + 1;
     }
     unsigned costDelta = CreateShuffledVector(path);
-    //InitTemperature(costDelta);
-    temperature_ = 5;
-    std::cout << "temperature: " << temperature_ << std::endl;
+    temperature_ = 10;
+    //  std::cout << "temperature: " << temperature_ << std::endl;
 }
 
 unsigned SimulatedAnnealing::CreateShuffledVector(Path &path) {
@@ -104,17 +104,11 @@ unsigned SimulatedAnnealing::CreateShuffledVector(Path &path) {
         }
     }
     path.cost_ = cost_buffer;
-    PrintVerticesVector(path.path_);
-    std::cout << "Cost_min = " << cost_min << "; cost_max = " << cost_max << std::endl;
     return (cost_max - cost_min);
-
 }
 
 void SimulatedAnnealing::CreatePermutation(Path &path) {
     std::uniform_int_distribution<unsigned> distribution(0, graphSize_ - 2);
-    unsigned first = distribution(eng);
-    unsigned second = distribution(eng);
-    // std::cout << "first: " << first << "; second: " << second << std::endl;
     for (unsigned inner = 0; inner < 1; ++inner) {
         std::swap(path.path_[distribution(eng)], path.path_[distribution(eng)]);
     }

@@ -12,6 +12,10 @@ class SimulatedAnnealing : public AlgorithmTSP {
 public:
     explicit SimulatedAnnealing(std::string);
 
+    explicit SimulatedAnnealing(std::string, bool);
+
+    explicit SimulatedAnnealing(bool, std::string);
+
     double InitAlgorithm(unsigned);
 
     void CalculatePath(unsigned);

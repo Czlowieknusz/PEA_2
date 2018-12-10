@@ -3,6 +3,7 @@
 //
 
 #include "Menu.h"
+#include "Test.h"
 #include <iostream>
 
 Menu::Menu(std::string fileName) : simulatedAnnealing(std::move(fileName)) {
@@ -14,6 +15,7 @@ void Menu::PrintMainMenu() {
     std::cout << "---------- Main menu ----------" << std::endl;
     std::cout << "1. Print loaded Graph." << std::endl;
     std::cout << "2. Calculate path." << std::endl;
+    std::cout << "3. Test." << std::endl;
     std::cout << "0. Finish executing program." << std::endl;
 }
 
@@ -21,7 +23,7 @@ void Menu::MainMenu() {
     while (true) {
         PrintMainMenu();
         int userOption = -1;
-        while (userOption < 0 || userOption > 2) {
+        while (userOption < 0 || userOption > 3) {
             std::cout << "Your option: ";
             std::cin >> userOption;
         }
@@ -37,6 +39,11 @@ void Menu::MainMenu() {
                 std::cout << "Which vertex do u want to start from?" << std::endl;
                 std::cin >> startVertex;
                 simulatedAnnealing.InitAlgorithm(startVertex);
+                break;
+            }
+            case 3: {
+                Test test;
+                test.MakeTests();
                 break;
             }
             default:

@@ -11,13 +11,21 @@ class DataLoader {
 public:
     explicit DataLoader(std::string);
 
+    DataLoader() = default;
+
     ~DataLoader();
 
     unsigned GetGraphSizeFromFile();
 
     void AddEdgesFromFileToGraph(unsigned **graph, unsigned graphSize);
 
+    void AddEdgesFromFileToGraphTSPLIB(unsigned **graph, unsigned graphSize);
+
+    void AddEdgesFromFileToGraphATSP(unsigned **graph, unsigned &graphSize);
+
     unsigned GetUnsignedFromFile();
+
+    void ReserveMemoryForGraph(unsigned** graph, unsigned graphSize);
 
 private:
     std::ifstream myFile_;

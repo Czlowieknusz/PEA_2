@@ -101,6 +101,12 @@
 		<Unit filename="Q:/Studia/CLion/PEA_2/SimulatedAnnealing.h">
 			<Option target="PEA_2"/>
 		</Unit>
+		<Unit filename="Q:/Studia/CLion/PEA_2/Test.cpp">
+			<Option target="PEA_2"/>
+		</Unit>
+		<Unit filename="Q:/Studia/CLion/PEA_2/Test.h">
+			<Option target="PEA_2"/>
+		</Unit>
 		<Unit filename="Q:/Studia/CLion/PEA_2/Timer.cpp">
 			<Option target="PEA_2"/>
 		</Unit>
