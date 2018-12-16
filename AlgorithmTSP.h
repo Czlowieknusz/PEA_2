@@ -11,6 +11,8 @@ struct Path {
     unsigned cost_;
     unsigned startVertex_;
 
+    Path() = default;
+
     explicit Path(unsigned startVertex, unsigned graphSize) : startVertex_(startVertex),
                                                               cost_(0), path_(graphSize) {}
 
@@ -56,9 +58,11 @@ public:
 
     AlgorithmTSP(bool isTsp, std::string fileName) {
         DataLoader dataLoader(std::move(fileName));
-        std::cout << "halo" << std::endl;
+        graphSize_ = dataLoader.GetGraphSizeFromFileATSP();
+        ReserveMemoryForGraph();
+        //std::cout << "halo" << std::endl;
         dataLoader.AddEdgesFromFileToGraphATSP(graph_, graphSize_);
-        std::cout << "halo4" << std::endl;
+        //std::cout << "halo4" << std::endl;
     }
 
     AlgorithmTSP(std::string fileName, bool isTsp) {

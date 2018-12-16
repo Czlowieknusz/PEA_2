@@ -50,30 +50,51 @@ void SimulatedAnnealing::CalculatePath(unsigned startVertex) {
     Path path(startVertex, graphSize_ - 1);
     Path bestPath(startVertex, graphSize_ - 1);
     InitPath(path);
-    double minTemperature = exp(-3);
+    double minTemperature = pow(10, -2);
     double temperatureOnTheStep;
-    unsigned stepLength = graphSize_ * graphSize_ * graphSize_;
+    unsigned stepLength = graphSize_*20;
     bestPath = path;
+    unsigned lastBestCost = path.cost_;
+    unsigned iterationsWithoutChange = 0;
 
     std::uniform_real_distribution<double> distributionProbability(0.0f, 1.0f);
-
+    unsigned iteration = 0;
     while (temperature_ > minTemperature) {
         temperatureOnTheStep = temperature_;
         for (unsigned inner = 0; inner < stepLength; ++inner) {
-            CreatePermutation(path);
-            double probability = (distributionProbability(eng));
-            if (bestPath.cost_ > path.cost_) {
-                bestPath = path;
-            } else if (probability <= 1 / (1 + std::exp((-1) * (path.cost_ - bestPath.cost_) / temperatureOnTheStep))) {
-                bestPath = path;
+            for (unsigned firstIndex = 0; firstIndex < graphSize_ - 1; ++firstIndex) {
+                for (unsigned secondIndex = 0; secondIndex < graphSize_ - 1; ++secondIndex) {
+                    std::swap(path.path_[firstIndex], path.path_[secondIndex]);
+                    CalculatePathCost(path);
+                    double probability = (distributionProbability(eng));
+                    if (path.cost_ < bestPath.cost_) {
+                        bestPath = path;
+                    } else if (probability <=
+                               1 / (1 + std::exp((path.cost_ - bestPath.cost_) / temperatureOnTheStep))) {
+                        bestPath = path;
+                    } else {
+                        std::swap(path.path_[firstIndex], path.path_[secondIndex]);
+                    }
+                }
             }
             temperatureOnTheStep *= 0.99;
         }
+        if (lastBestCost == bestPath.cost_) {
+            ++iterationsWithoutChange;
+            if (iterationsWithoutChange == 5) {
+                break;
+            }
+        } else {
+            lastBestCost = bestPath.cost_;
+        }
         NextTemperature();
+        ++iteration;
+        if (iteration == 10) {
+            std::cout << "Temperatura: " << temperature_ << "; koszt: " << bestPath.cost_ << std::endl;
+            iteration = 0;
+        }
     }
     std::cout << "Koniec:" << std::endl;
-    std::cout << path << std::endl;
-
     std::cout << bestPath << std::endl;
 }
 
@@ -81,30 +102,27 @@ void SimulatedAnnealing::InitPath(Path &path) {
     for (unsigned i = 0; i < graphSize_ - 1; ++i) {
         path.path_[i] = i + 1;
     }
-    unsigned costDelta = CreateShuffledVector(path);
-    temperature_ = 10;
-    //  std::cout << "temperature: " << temperature_ << std::endl;
+    CreateShuffledVector(path);
+    temperature_ = graphSize_ * (10 ^ 3);
 }
 
 unsigned SimulatedAnnealing::CreateShuffledVector(Path &path) {
-    std::uniform_int_distribution<unsigned> distribution(0, graphSize_ - 2);
-    unsigned cost_max = std::numeric_limits<unsigned>::min();
-    unsigned cost_min = std::numeric_limits<unsigned>::max();
-    unsigned cost_buffer = 0;
+    CalculatePathCost(path);
+    /*Path neighbourPath(path);
     for (unsigned outer = 0; outer < graphSize_; ++outer) {
-        for (unsigned inner = 0; inner < 5; ++inner) {
-            std::swap(path.path_[distribution(eng)], path.path_[distribution(eng)]);
+        for (unsigned firstIndex = 0; firstIndex < graphSize_ - 1; ++firstIndex) {
+            for (unsigned secondIndex = 0; secondIndex < graphSize_ - 1; ++secondIndex) {
+                std::swap(neighbourPath.path_[firstIndex], neighbourPath.path_[secondIndex]);
+                CalculatePathCost(neighbourPath);
+                if (neighbourPath.cost_ < path.cost_) {
+                    path = neighbourPath;
+                } else {
+                    std::swap(neighbourPath.path_[firstIndex], neighbourPath.path_[secondIndex]);
+                }
+            }
         }
-        cost_buffer = CalculatePathCost(path);
-        if (cost_max < cost_buffer) {
-            cost_max = cost_buffer;
-        }
-        if (cost_min > cost_buffer) {
-            cost_min = cost_buffer;
-        }
-    }
-    path.cost_ = cost_buffer;
-    return (cost_max - cost_min);
+    }*/
+    return path.cost_;
 }
 
 void SimulatedAnnealing::CreatePermutation(Path &path) {
@@ -116,7 +134,7 @@ void SimulatedAnnealing::CreatePermutation(Path &path) {
 }
 
 void SimulatedAnnealing::NextTemperature() {
-    temperature_ *= 0.95;
+    temperature_ *= 0.9;
 }
 
 unsigned SimulatedAnnealing::CalculatePathCost(Path &path) {

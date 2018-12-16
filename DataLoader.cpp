@@ -69,15 +69,31 @@ void DataLoader::ReserveMemoryForGraph(unsigned **graph, unsigned graphSize) {
     }
 }
 
-void DataLoader::AddEdgesFromFileToGraphATSP(unsigned **graph, unsigned &graphSize) {
+unsigned DataLoader::GetGraphSizeFromFileATSP() {
     if (myFile_.is_open()) {
         std::string line;
         do {
             myFile_ >> line;
         } while (line != "DIMENSION:");
         myFile_ >> line;
-        graphSize = static_cast<unsigned >(std::stoi(line));
+        auto graphSize = static_cast<unsigned >(std::stoi(line));
         std::cout << graphSize << std::endl;
+        return graphSize;
+    }
+    return 0;
+}
+
+void DataLoader::AddEdgesFromFileToGraphATSP(unsigned **graph, unsigned &graphSize) {
+    if (myFile_.is_open()) {
+        std::string line;
+/*
+do {
+    myFile_ >> line;
+} while (line != "DIMENSION:");
+myFile_ >> line;
+graphSize = static_cast<unsigned >(std::stoi(line));
+std::cout << graphSize << std::endl;
+ */
         do {
             myFile_ >> line;
         } while (line != "EDGE_WEIGHT_FORMAT:");
@@ -86,17 +102,17 @@ void DataLoader::AddEdgesFromFileToGraphATSP(unsigned **graph, unsigned &graphSi
             do {
                 myFile_ >> line;
             } while (line != "EDGE_WEIGHT_SECTION");
-            ReserveMemoryForGraph(graph, graphSize);
+            //ReserveMemoryForGraph(graph, graphSize);
             for (unsigned i = 0; i < graphSize; ++i) {
                 for (unsigned j = 0; j < graphSize; ++j) {
                     myFile_ >> line;
-                    std::cout << ";" << line <<";" << std::endl;
+                    //std::cout << ";" << line << ";" << std::endl;
                     auto cost = static_cast<unsigned >(stoi(line));
-                    std::cout << "line: " << line << "; cost: " << cost <<std::endl;
+                    //std::cout << "line: " << line << "; cost: " << cost << std::endl;
                     if (i != j) {
-                        std::cout << "hmmm" << std::endl;
+                        //std::cout << "hmmm" << std::endl;
                         graph[i][j] = cost;
-                        std::cout << "hmmm2" << std::endl;
+                        //std::cout << "hmmm2" << std::endl;
                     }
                 }
             }

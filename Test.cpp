@@ -15,7 +15,12 @@ void Test::MakeTests() {
                                                                                           "Graph_fiveteen.txt",
                                                                                           "Graph_sixteen.txt"});
     std::vector<std::string> hmm(
-            {"ft53.atsp"/*"tsp_10.txt", "tsp_12.txt"*/});
+            {"br17.atsp", "ftv33.atsp", "ftv35.atsp",
+             "ftv38.atsp", "p43.atsp", "ftv44.atsp", "ftv47.atsp", "ft53.atsp","ftv55.atsp","ftv64.atsp",
+             "ft70.atsp",
+
+             "kro124p.atsp", "ftv170.atsp","rbg323.atsp"
+             /*"tsp_10.txt", "tsp_12.txt"*/});
     for (auto &fileName : hmm) {
         std::cout << "File name is " << fileName << std::endl;
         CalculateSimulatedAnnealing(1, fileName);
@@ -34,5 +39,4 @@ void Test::CalculateSimulatedAnnealing(unsigned numberOfTests, std::string fileN
     }
     average_time /= numberOfTests;
     std::cout << "SimulatedAnnealing: " << " ; " << average_time << std::endl;
-    simulatedAnnealing.PrintGraph();
 }

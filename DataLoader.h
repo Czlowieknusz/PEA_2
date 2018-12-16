@@ -17,6 +17,8 @@ public:
 
     unsigned GetGraphSizeFromFile();
 
+    unsigned GetGraphSizeFromFileATSP();
+
     void AddEdgesFromFileToGraph(unsigned **graph, unsigned graphSize);
 
     void AddEdgesFromFileToGraphTSPLIB(unsigned **graph, unsigned graphSize);
